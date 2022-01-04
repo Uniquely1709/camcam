@@ -1,4 +1,6 @@
 FROM node:bullseye
+LABEL org.opencontainers.image.source="https://github.com/jdenda/camcam"
+
 
 RUN mkdir /home/node/camcam
 RUN mkdir /mnt/library

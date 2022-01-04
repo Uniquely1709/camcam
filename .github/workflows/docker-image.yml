@@ -22,7 +22,11 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GH_TOKEN }}
-        
+
+    - name: Fix working directory ownership
+      if: matrix.container
+      run: chown root.root .
+
     - name: Build the Docker image
       run: |
         docker build . --file Dockerfile --tag ghcr.io/jdenda/camcam:latest

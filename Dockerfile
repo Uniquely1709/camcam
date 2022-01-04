@@ -7,9 +7,7 @@ RUN mkdir /mnt/library
 COPY . /home/node/camcam
 WORKDIR /home/node/camcam
 RUN npm install --unsafe-perm
-RUN chown -R node /home/node/camcam/
-
 RUN mkdir /home/node/camcam/tmp && mkdir /home/node/camcam/images
-
+RUN chown -R node /home/node/camcam/
 
 CMD [ "node","server.js" ]

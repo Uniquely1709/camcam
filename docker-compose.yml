@@ -1,0 +1,10 @@
+version: '3'
+services:
+  camcamdocker: 
+    image: camcam:latest
+    container_name: camcam
+    user: node
+    ports:
+      - 5000:5000
+    volumes:
+      - ./library:/mnt/library:ro

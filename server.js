@@ -3,29 +3,24 @@ var fs = require('fs');
 var cron = require('node-cron');
 var serve = require('./serveImage');
 var count = 1;
-
-copyRandFile();
-cron.schedule('*/1 * * * *', () => {
-    copyRandFile();
-    console.log('running a task in 1 minutes');
-  });
-
 var app = express();
 
-
 // Defining port number
-const PORT = 5000;    
+const PORT = process.env.PORT || 5000;
+const MINUTES = process.env.MINUTES || 5;
 
-//setting middleware
-// app.use(express.static('public')); //Serves resources from public folder
+
+copyRandFile();
+cron.schedule('*/'+MINUTES+' * * * *', () => {
+    copyRandFile();
+    console.log('running a task in '+MINUTES+' minute(s)');
+  });
 
 app.use('/images', express.static('images'));
-
 
 var server = app.listen(PORT, () => {
     console.log(`Running server on PORT ${PORT}...`);
   })
-
 
 function copyRandFile(){
     var servingPath = './images/image.jpg';
@@ -35,12 +30,4 @@ function copyRandFile(){
     console.log(chosenFile);
     serve.generateImage(library+chosenFile, count);
     count = count + 1;
-    // fs.copyFile(library+chosenFile, servingPath, (err) => {
-    //     if (err) {
-    //       console.log("Error Found:", err);
-    //     }
-    //     else {
-    //       console.log("File Contents of copied_file:");
-    //     }
-    //   });
 }

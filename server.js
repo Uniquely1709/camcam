@@ -8,12 +8,13 @@ var app = express();
 // Defining port number
 const PORT = process.env.PORT || 5000;
 const MINUTES = process.env.MINUTES || 5;
+const OFFSET = process.env.OFFSET || 0;
 
 
 copyRandFile();
 cron.schedule('*/'+MINUTES+' * * * *', () => {
     copyRandFile();
-    console.log('running a task in '+MINUTES+' minute(s)');
+    console.log('generating new picture in '+MINUTES+' minute(s)');
   });
 
 app.use('/images', express.static('images'));
@@ -31,6 +32,6 @@ function copyRandFile(){
     var allFiles = fs.readdirSync(library);
     let chosenFile = allFiles[Math.floor(Math.random() * allFiles.length)];
     console.log(chosenFile);
-    serve.generateImage(library+chosenFile, count);
+    serve.generateImage(library+chosenFile, count, OFFSET);
     count = count + 1;
 }

@@ -3,6 +3,7 @@ LABEL org.opencontainers.image.source="https://github.com/jdenda/camcam"
 
 ENV PORT ${PORT}
 ENV MINUTES ${MINUTES}
+ENV OFFSET ${OFFSET}
 
 RUN mkdir /home/node/camcam
 RUN mkdir /mnt/library

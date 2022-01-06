@@ -1,15 +1,16 @@
 const sharp = require("sharp");
 
-async function compositeImages(underlaying, top, position, output) {
+async function compositeImages(underlaying, top, position, output, offset) {
   try {
     await sharp(underlaying)
       .composite([
         {
           input: top,
-          top: 0,
+          top: offset,
           left: position,
         },
       ])
+      .sharpen()
       .toFile(output);
   } catch (error) {
     console.log(error);

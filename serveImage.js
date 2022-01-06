@@ -6,11 +6,9 @@ var comp = require('./compositeImages');
 var fs = require('fs');
 
 let baseData; 
-const output = './images/image.jpg';
 
-
-function generateImage(path, int, offset){
-    console.log("generating picture based off "+path)
+function generateImage(path, int, offset, output){
+    console.log("generating picture with offset "+offset+" based of "+path)
     const pre = './tmp/image'+(int-1);
     if(!pre===0){
         try {
@@ -21,7 +19,7 @@ function generateImage(path, int, offset){
             console.error(err)
         }
     }
-    const tmp = './tmp/image'+int;
+    const tmp = './tmp/image'+int+offset;
     meta.getMetadata(path).then(x => {
         baseData = x; 
         height.resizeImageHeight(path, tmp+"-resized-height.jpg", offset)

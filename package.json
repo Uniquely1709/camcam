@@ -1,8 +1,10 @@
 {
   "dependencies": {
+    "config": "^3.3.6",
     "express": "^4.17.2",
     "fs": "^0.0.1-security",
     "fs-extra": "^10.0.0",
+    "js-yaml": "^4.1.0",
     "node-cron": "^3.0.0",
     "sharp": "^0.29.3"
   }

@@ -1,10 +1,10 @@
 const sharp = require("sharp");
 
-async function resizeImageWidth(input, output) {
+async function resizeImageWidth(input, output, width) {
   try {
     await sharp(input)
       .resize({
-        width: 1920
+        width: width
       })
       .blur(20)
       .toFile(output);

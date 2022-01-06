@@ -1,0 +1,20 @@
+Connection: 
+  server: 
+    hostname: 192.168.1.49
+    port: 5000
+Generation: 
+  minutes: 2
+  offsets: "0,5,100"
+Versions: 
+  v1:
+    height: 1080
+    width: 1920
+    offset: 100
+    shadow: true
+    name: janneck
+  v2: 
+    height: 720 
+    width: 1250
+    offset: 0
+    shadow: false
+    name: janek

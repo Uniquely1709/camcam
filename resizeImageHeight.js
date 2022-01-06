@@ -1,10 +1,10 @@
 const sharp = require("sharp");
 
-async function resizeImageHeight(input, output, offset) {
+async function resizeImageHeight(input, output, offset, height) {
   try {
     await sharp(input)
       .resize({
-        height: (1080 - (2 * offset))
+        height: (height - (2 * offset))
       })
       .toFile(output);
   } catch (error) {

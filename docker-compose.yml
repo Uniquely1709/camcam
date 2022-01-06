@@ -4,11 +4,8 @@ services:
     image: camcam:latest
     container_name: camcam
     user: node
-    environment:
-      - PORT=5000 #if not defined = 5000
-      - MINUTES=2 #if not defined = 5
-      - OFFSET=0,5,15 #if not defined = 0
     ports:
       - 5000:5000
     volumes:
       - ./library:/mnt/library:ro
+      - ./config:/home/node/camcam/config:rw

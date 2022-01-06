@@ -17,6 +17,9 @@ cron.schedule('*/'+MINUTES+' * * * *', () => {
   });
 
 app.use('/images', express.static('images'));
+app.use(function (req, res, next) {
+  res.redirect('images/image.jpg');
+});
 
 var server = app.listen(PORT, () => {
     console.log(`Running server on PORT ${PORT}...`);

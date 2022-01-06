@@ -4,7 +4,6 @@ Connection:
     port: 5000
 Generation: 
   minutes: 2
-  offsets: "0,5,100"
 Versions: 
   v1:
     height: 1080

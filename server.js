@@ -40,6 +40,7 @@ function setNewPictures(VERSIONS, con){
     if(results.length > 0){
       results.forEach(result =>{
         con.query("select image_id from images where folder = '"+result.folder+"' order by rand() limit 1", function(err, rs){
+          if (rs.length >= 1){
           con.query("update versions set image = "+rs[0].image_id+" where folder = '"+result.folder+"'", res =>{
             VERSIONS.forEach(version=>{
               con.query("select image.folder, image.image from images as image, versions as versions where image.image_id = versions.image and versions.name = '"+version.name+"'", function (err, result) {
@@ -55,6 +56,7 @@ function setNewPictures(VERSIONS, con){
               });
           })
           })
+        }
         })
       })
     }else{

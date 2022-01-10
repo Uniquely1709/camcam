@@ -9,3 +9,25 @@ services:
     volumes:
       - ./library:/mnt/library:ro
       - ./config:/home/node/camcam/config:rw
+    depends_on:
+      - mariadb
+    networks:
+      - cam
+  mariadb: 
+    image: lscr.io/linuxserver/mariadb
+    container_name: mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=test
+      - TZ=Europe/Berlin
+      - MYSQL_DATABASE=camcam #optional
+      - MYSQL_USER=camcam #optional
+      - MYSQL_PASSWORD=test #optional
+    restart: unless-stopped
+    networks:
+      - cam
+
+networks:
+  cam: 
+    external: true

@@ -1,0 +1,43 @@
+Connection: 
+  server: 
+    hostname: host
+    port: 5000
+  db: 
+    hostname: 
+    port: 
+    user: 
+    password: 
+    database: 
+Generation: 
+  minutes: 1
+  save: true
+BaseLibrary: '/home/camcam/library/'
+Versions: 
+  v1:
+    height: 1080
+    width: 1920
+    offset: 100
+    shadow: true
+    name: test
+    folder: main
+  v2:
+    height: 1920
+    width: 1080
+    offset: 100
+    shadow: true
+    name: test2
+    folder: main
+  v3:
+    height: 1080
+    width: 1920
+    offset: 100
+    shadow: true
+    name: fhd
+    folder: test
+  # v2: 
+  #   height: 720 
+  #   width: 1250
+  #   offset: 0
+  #   shadow: false
+  #   name: main
+  #   folder: main

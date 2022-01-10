@@ -2,8 +2,16 @@ Connection:
   server: 
     hostname: host
     port: 5000
+  db: 
+    hostname: mariadb
+    port:
+    user: camcam
+    password: test
+    database: camcam
 Generation: 
   minutes: 2
+  save: true
+BaseLibrary: '/mnt/library/'
 Versions: 
   v1:
     height: 1080
@@ -11,9 +19,11 @@ Versions:
     offset: 100
     shadow: true
     name: fhd
+    folder: main
   v2: 
-    height: 720 
-    width: 1250
+    height: 1920 
+    width: 1080
     offset: 0
     shadow: false
     name: main
+    folder: main

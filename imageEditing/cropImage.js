@@ -1,9 +1,9 @@
 const sharp = require("sharp");
 
-async function cropImage(input, output, crop, height, width) {
+async function cropImage(input, output, top, left, height, width) {
   try {
     await sharp(input)
-      .extract({ width: width, height: height, left: 0, top: crop  })
+      .extract({ width: width, height: height, left: left, top: top  })
       .toFile(output);
   } catch (error) {
     console.log(error);

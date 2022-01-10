@@ -45,6 +45,4 @@ async function boxShadow(main, background, vheight, vwidth, output) {
   }
 }
 
-boxShadow();
-
 module.exports.boxShadow = boxShadow;

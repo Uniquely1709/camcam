@@ -14,7 +14,6 @@ async function compositeImages(format, underlaying, top, position, output, offse
       .sharpen()
       .toFile(output);
     }else{
-      console.log(position)
       await sharp(underlaying)
       .composite([
         {

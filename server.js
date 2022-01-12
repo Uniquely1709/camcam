@@ -9,6 +9,7 @@ var db = require('./manageDB');
 var count = 1;
 var app = express();
 var mysql = require('mysql');
+var glob = require('glob')
 const res = require('express/lib/response');
 
 
@@ -24,6 +25,17 @@ console.log('Environment: '+process.env.NODE_ENV);
 const PORT = config.has('Connection.server.port') ? config.get('Connection.server.port') : 5000;
 const MINUTES = config.has('Generation.minutes') ? config.get('Generation.minutes') : 5;
 const LIBRARY = config.has('BaseLibrary') ? config.get('BaseLibrary') : 'nopath';
+
+try {
+  glob('./images/*', function (er, files) {
+      for (const file of files) {
+          fs.unlinkSync(file)
+     }
+  })
+} catch(err) {
+  console.error(err)
+}
+
 const VERSIONS = getVersions();
 
 app.use('/images', express.static('images'));
@@ -36,38 +48,45 @@ var server = app.listen(PORT, () => {
 })
 
 function setNewPictures(VERSIONS, con){
-  con.query("select distinct folder from versions", function(err, results){
+  con.query("select distinct folder from versions where deleted = false", function(err, results){
     if(results.length > 0){
-      results.forEach(result =>{
-        con.query("select image_id from images where folder = '"+result.folder+"' order by rand() limit 1", function(err, rs){
-          if (rs.length >= 1){
-          con.query("update versions set image = "+rs[0].image_id+" where folder = '"+result.folder+"'", res =>{
-            VERSIONS.forEach(version=>{
-              con.query("select image.folder, image.image from images as image, versions as versions where image.image_id = versions.image and versions.name = '"+version.name+"'", function (err, result) {
-                if (err) throw err;
-                if (result.length > 0){
-                  oldFolder = version.folder;
-                  oldImage = result[0].image;
-                  console.log(LIBRARY+result[0].folder+'/'+result[0].image)
-                  copyRandFile(LIBRARY+result[0].folder+'/'+result[0].image, version, (Math.round((version.width / version.height)*100))/100, VERSIONS);
-                }else{
-                  console.log("nothing indexed yet")
-                }
-              });
-          })
-          })
-        }
-        })
-      })
+      generateNewImageIDs(results, VERSIONS, generateNewImages)
+
     }else{
       console.log("no versions indexed yet")
     }
   })
 }
 
+function generateNewImageIDs(results, VERSIONS, _cb){
+  results.forEach(result =>{
+    con.query("select image_id from images where folder = '"+result.folder+"' order by rand() limit 1", function(err, rs){
+      if (rs.length >= 1){
+      con.query("update versions set image = "+rs[0].image_id+" where folder = '"+result.folder+"'", res =>{
+      })
+    }
+    })
+  })
+  _cb(VERSIONS);
+}
+
+function generateNewImages(VERSIONS){
+  VERSIONS.forEach(version=>{
+    con.query("select image.folder, image.image from images as image, versions as versions where image.image_id = versions.image and versions.name = '"+version.name+"'", function (err, result) {
+      if (err) throw err;
+      if (result.length > 0){
+        oldFolder = version.folder;
+        oldImage = result[0].image;
+        copyRandFile(LIBRARY+result[0].folder+'/'+result[0].image, version, (Math.round((version.width / version.height)*100))/100, VERSIONS);
+      }else{
+        console.log("nothing indexed yet")
+      }
+    });
+})
+}
+
 function copyRandFile(input, version, aspect, VERSIONS){
     var servingPath = './images/image_'+version.name+'.jpg';
-    console.log(count)
     serve.generateImage(input, count, version, servingPath, aspect, VERSIONS.length);
     count = count + 1;
 }
@@ -120,8 +139,6 @@ function startup(){
 function start(){
   setNewPictures(VERSIONS, con)
   scheudle(con)
-
-
 }
 
 startup()

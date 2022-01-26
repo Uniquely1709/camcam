@@ -12,6 +12,7 @@ Generation:
   minutes: 1
   save: true
 BaseLibrary: '/home/camcam/library/'
+GeneratedLibrary: '/home/camcam/generated'
 Versions: 
   v1:
     height: 1080

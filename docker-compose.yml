@@ -8,6 +8,7 @@ services:
       - 5000:5000
     volumes:
       - ./library:/mnt/library:ro
+      - ./generated-docker:/home/node/camcam/docker-generated
       - ./config:/home/node/camcam/config:rw
     depends_on:
       - mariadb

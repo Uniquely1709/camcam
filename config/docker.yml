@@ -12,6 +12,7 @@ Generation:
   minutes: 2
   save: true
 BaseLibrary: '/mnt/library/'
+GeneratedLibrary: '/home/node/camcam/docker-generated/'
 Versions: 
   v1:
     height: 1080

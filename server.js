@@ -24,6 +24,8 @@ console.log('Environment: '+process.env.NODE_ENV);
 
 const PORT = config.has('Connection.server.port') ? config.get('Connection.server.port') : 5000;
 const MINUTES = config.has('Generation.minutes') ? config.get('Generation.minutes') : 5;
+const SAVE = config.has('Generation.save') ? config.get('Generation.save') : false;
+const GENERATED = config.has('GeneratedLibrary') ? config.get('GeneratedLibrary') : 'nopath';
 const LIBRARY = config.has('BaseLibrary') ? config.get('BaseLibrary') : 'nopath';
 
 try {
@@ -72,12 +74,27 @@ function generateNewImageIDs(results, VERSIONS, _cb){
 
 function generateNewImages(VERSIONS){
   VERSIONS.forEach(version=>{
-    con.query("select image.folder, image.image from images as image, versions as versions where image.image_id = versions.image and versions.name = '"+version.name+"'", function (err, result) {
+    con.query("select image.folder, image.image, versions.version_id, image.image_id from images as image, versions as versions where image.image_id = versions.image and versions.name = '"+version.name+"'", function (err, result) {
       if (err) throw err;
       if (result.length > 0){
-        oldFolder = version.folder;
-        oldImage = result[0].image;
-        copyRandFile(LIBRARY+result[0].folder+'/'+result[0].image, version, (Math.round((version.width / version.height)*100))/100, VERSIONS);
+        con.query("select generated from generations where version_id = "+result[0].version_id+" and image_id = "+result[0].image_id, function(err, gen){ 
+          var url = GENERATED+"versionID-"+result[0].version_id+"/"+result[0].image_id+".jpg"
+          if(gen.length > 0 && gen[0].generated == true){
+              console.log("using generated version for "+result[0].version_id+"/"+result[0].image_id)
+              fs.copyFile(url, './images/image_'+version.name+'.jpg', (err)=>{
+                if (err)
+                  console.log(err)
+              })
+          }else{
+              var output = './images/image_'+version.name+'.jpg'
+              if(SAVE){
+                var path = url; 
+              }else{
+                var path = output;
+              }
+              copyRandFile(LIBRARY+result[0].folder+'/'+result[0].image, version, (Math.round((version.width / version.height)*100))/100, VERSIONS, path, output, result[0].image_id, result[0].version_id);
+          }
+        })
       }else{
         console.log("nothing indexed yet")
       }
@@ -85,9 +102,8 @@ function generateNewImages(VERSIONS){
 })
 }
 
-function copyRandFile(input, version, aspect, VERSIONS){
-    var servingPath = './images/image_'+version.name+'.jpg';
-    serve.generateImage(input, count, version, servingPath, aspect, VERSIONS.length);
+function copyRandFile(input, version, aspect, VERSIONS, path, output, image_id, version_id){
+    serve.generateImage(input, count, version, path, aspect, VERSIONS.length, SAVE, output, image_id, version_id, con);
     count = count + 1;
 }
 
@@ -133,7 +149,7 @@ function startup(){
   console.log("cleanup tmp dir..")
   fsExtra.emptyDirSync('./tmp')
   console.log('generating new picture in '+MINUTES+' minute(s)');
-  db.setup(con, VERSIONS, LIBRARY, start)
+  db.setup(con, VERSIONS, LIBRARY, SAVE, GENERATED, start)
 }
 
 function start(){

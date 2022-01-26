@@ -1,8 +1,10 @@
 node_modules/
 library/
 .vscode/
-images/image*
 tmp/*
 cleanup.sh
 config/standalone.yml
 ./docker-compose.yml
+generated*
+images/*
+camcam.code-workspace

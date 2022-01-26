@@ -9,7 +9,7 @@ var fs = require('fs');
 
 let baseData; 
 
-function generateImage(path, int, version, output, aspect, length){
+function generateImage(path, int, version, output, aspect, length, save, finalDest, image_id, version_id, con){
     console.log("generating picture with offset "+version.offset+" based of "+path+ " + aspect "+aspect)
     const pre = './tmp/image'+(int-(3*length))+"-"+version.offset+"*";
     if(int>1){
@@ -35,9 +35,17 @@ function generateImage(path, int, version, output, aspect, length){
                             let widthData = y;
                             if(version.shadow==false){
                                 comp.compositeImages("width", tmp+"-resized-width-cropped.jpg", tmp+"-resized-height.jpg", Math.round(version.width / 2 - widthData.width / 2), output, parseInt(version.offset, 10)).then(x =>{
+                                    if(save){
+                                        saveFile(output, finalDest)
+                                            .then(indexGenerated(version_id, image_id, con))
+                                    }
                                 }).catch(console.error)
                             }else{
                                 shadow.boxShadow(tmp+"-resized-height.jpg", tmp+"-resized-width-cropped.jpg", version.height, version.width, output).then(x=>{
+                                    if(save){
+                                        saveFile(output, finalDest)
+                                            .then(indexGenerated(version_id, image_id, con))
+                                    }
                                 }).catch(console.error)
                             }
                         }).catch(console.error)
@@ -53,9 +61,17 @@ function generateImage(path, int, version, output, aspect, length){
                             let heightData = y;
                             if(version.shadow==false){
                                 comp.compositeImages("height", tmp+"-resized-height-cropped.jpg", tmp+"-resized-width.jpg", Math.round((version.height - heightData.height)/2), output, parseInt(version.offset, 10)).then(x =>{
+                                    if(save){
+                                        saveFile(output, finalDest)
+                                            .then(indexGenerated(version_id, image_id, con))
+                                    }
                                 }).catch(console.error)
                             }else{
                                 shadow.boxShadow(tmp+"-resized-width.jpg", tmp+"-resized-height-cropped.jpg", version.height, version.width, output).then(x=>{
+                                    if(save){
+                                        saveFile(output, finalDest)
+                                            .then(indexGenerated(version_id, image_id, con))
+                                    }
                                 }).catch(console.error)
                             }
                         }).catch(console.error)
@@ -65,6 +81,38 @@ function generateImage(path, int, version, output, aspect, length){
         }
     }).catch(error => {
         console.error(error);
+    })
+}
+
+const saveFile = (output, finalDest) => {
+    return new Promise((resolve, reject) => {
+        fs.copyFile(output, finalDest, (err)=>{
+                if (err){
+                    reject(err)
+                    return
+                }
+                resolve()
+            })
+    })
+}
+
+const indexGenerated = (version_id, image_id, con) => {
+    return new Promise((resolve, reject) => {
+        con.query("select generated from generations where version_id = "+version_id+" and image_id="+image_id, function(err, results){
+            if(err){
+                reject(err)
+            }
+            if(results.length == 0 || results[0].generated == false){
+                console.log("marking image as generated")
+                con.query("insert into generations (version_id, image_id, generated) VALUES ("+version_id+", "+image_id+", true)",  function(err, results){
+                    if(err){
+                        reject(err)
+                    }
+                    resolve;
+                })
+            }
+        })
+
     })
 }
 

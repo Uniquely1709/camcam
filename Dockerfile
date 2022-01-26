@@ -6,12 +6,13 @@ RUN mkdir /mnt/library
 COPY . /home/node/camcam
 WORKDIR /home/node/camcam
 RUN npm install --unsafe-perm
-RUN mkdir -p /home/node/camcam/tmp && mkdir -p /home/node/camcam/images
-RUN chown -R node /home/node/camcam/
+RUN mkdir -p /home/node/camcam/tmp && mkdir -p /home/node/camcam/images && mkdir -p /home/node/camcam/docker-generated
+RUN chown -R node:node /home/node/camcam/
+RUN chmod -R 777 /home/node/camcam/docker-generated/
 
 ARG NODE_ENV=docker
 ENV NODE_ENV ${NODE_ENV}
 
 EXPOSE 5000
 
-CMD [ "node","server.js" ]1
+CMD [ "npm","run","start" ]

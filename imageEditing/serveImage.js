@@ -26,7 +26,15 @@ function generateImage(path, int, version, output, aspect, length, save, finalDe
     const tmp = './tmp/image'+int+"-"+version.offset;
     meta.getMetadata(path).then(x => {
         baseData = x; 
-        if(((Math.round((x.width / x.height)*100))/100)<=aspect){
+        if(((Math.round((x.width / x.height)*100))/100)==aspect){
+            height.resizeImageHeight(path, output, version.offset, version.height, parseInt(0, 10)).then(x=>{
+                if(save){
+                    saveFile(output, finalDest)
+                        .then(indexGenerated(version_id, image_id, con))
+                }
+            })
+        }
+        else if(((Math.round((x.width / x.height)*100))/100)<aspect){
             height.resizeImageHeight(path, tmp+"-resized-height.jpg", version.offset, version.height, parseInt(0, 10))
             width.resizeImageWidth(path, tmp+"-resized-width.jpg", parseInt(0, 10), version.width, parseInt(20, 10)).then(x =>{
                 meta.getMetadata(tmp+"-resized-width.jpg").then(x => {
@@ -86,13 +94,20 @@ function generateImage(path, int, version, output, aspect, length, save, finalDe
 
 const saveFile = (output, finalDest) => {
     return new Promise((resolve, reject) => {
-        fs.copyFile(output, finalDest, (err)=>{
-                if (err){
-                    reject(err)
-                    return
-                }
-                resolve()
-            })
+        try {
+            if (fs.existsSync(output)) {
+                fs.copyFile(output, finalDest, (err)=>{
+                    if (err){
+                        reject(err)
+                        return
+                    }
+                    resolve()
+                })
+            }
+          } catch(err) {
+            console.error(err)
+            reject(err)
+          }
     })
 }
 

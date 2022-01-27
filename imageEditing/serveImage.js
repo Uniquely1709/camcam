@@ -116,12 +116,12 @@ const indexGenerated = (version_id, image_id, con) => {
             if(err){
                 reject(err)
             }
-            if(results.length == 0 || results[0].generated == false){
-                console.log("marking image as generated")
+            if(results.length == 0 || results[0].generated == false){          
                 con.query("insert into generations (version_id, image_id, generated) VALUES ("+version_id+", "+image_id+", true)",  function(err, results){
                     if(err){
                         reject(err)
                     }
+                    console.log("marked image as generated")
                     resolve;
                 })
             }

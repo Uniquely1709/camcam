@@ -16,10 +16,8 @@ function setup(con, VERSIONS, LIBRARY,save, generated, cb){
           if(!folders.includes(version.folder)){
             const filenames = fs.readdirSync(LIBRARY+version.folder)
             filenames.forEach(file => {
-              console.log("Filename "+file)
               var req = "select * from images where image = '"+file+"'"
               con.query(req, function(err, result, fields){
-                console.log(file+"  "+result+ " "+result.length)
                 if(result.length === 0){
                   con.query("insert into images (image, folder, rating) values ('"+file+"', '"+version.folder+"', 0)", function (err, result) {
                     if (err) throw err;

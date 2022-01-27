@@ -1,7 +1,6 @@
 const sharp = require("sharp");
 
 async function compositeImages(format, underlaying, top, position, output, offset) {
-  try {
     if(format == "width"){
       await sharp(underlaying)
       .composite([
@@ -25,9 +24,5 @@ async function compositeImages(format, underlaying, top, position, output, offse
       .sharpen()
       .toFile(output);
     }
-
-  } catch (error) {
-    console.log(error);
-  }
 }
 module.exports.compositeImages = compositeImages;

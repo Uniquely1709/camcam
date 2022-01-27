@@ -153,7 +153,6 @@ function startup(){
 }
 
 function start(){
-  setNewPictures(VERSIONS, con)
   scheudle(con)
 }
 

@@ -28,10 +28,8 @@ function generateImage(path, int, version, output, aspect, length, save, finalDe
         baseData = x; 
         if(((Math.round((x.width / x.height)*100))/100)==aspect){
             height.resizeImageHeight(path, output, version.offset, version.height, parseInt(0, 10)).then(x=>{
-                if(save){
-                    saveFile(output, finalDest)
-                        .then(indexGenerated(version_id, image_id, con))
-                }
+                saving(save, output, finalDest, version_id, image_id, con)                                        
+
             })
         }
         else if(((Math.round((x.width / x.height)*100))/100)<aspect){
@@ -43,17 +41,13 @@ function generateImage(path, int, version, output, aspect, length, save, finalDe
                             let widthData = y;
                             if(version.shadow==false){
                                 comp.compositeImages("width", tmp+"-resized-width-cropped.jpg", tmp+"-resized-height.jpg", Math.round(version.width / 2 - widthData.width / 2), output, parseInt(version.offset, 10)).then(x =>{
-                                    if(save){
-                                        saveFile(output, finalDest)
-                                            .then(indexGenerated(version_id, image_id, con))
-                                    }
+                                    saving(save, output, finalDest, version_id, image_id, con)                                        
+
                                 }).catch(console.error)
                             }else{
                                 shadow.boxShadow(tmp+"-resized-height.jpg", tmp+"-resized-width-cropped.jpg", version.height, version.width, output).then(x=>{
-                                    if(save){
-                                        saveFile(output, finalDest)
-                                            .then(indexGenerated(version_id, image_id, con))
-                                    }
+                                    saving(save, output, finalDest, version_id, image_id, con)                                        
+
                                 }).catch(console.error)
                             }
                         }).catch(console.error)
@@ -69,17 +63,12 @@ function generateImage(path, int, version, output, aspect, length, save, finalDe
                             let heightData = y;
                             if(version.shadow==false){
                                 comp.compositeImages("height", tmp+"-resized-height-cropped.jpg", tmp+"-resized-width.jpg", Math.round((version.height - heightData.height)/2), output, parseInt(version.offset, 10)).then(x =>{
-                                    if(save){
-                                        saveFile(output, finalDest)
-                                            .then(indexGenerated(version_id, image_id, con))
-                                    }
+                                    saving(save, output, finalDest, version_id, image_id, con)                                        
+
                                 }).catch(console.error)
                             }else{
                                 shadow.boxShadow(tmp+"-resized-width.jpg", tmp+"-resized-height-cropped.jpg", version.height, version.width, output).then(x=>{
-                                    if(save){
-                                        saveFile(output, finalDest)
-                                            .then(indexGenerated(version_id, image_id, con))
-                                    }
+                                    saving(save, output, finalDest, version_id, image_id, con)                                        
                                 }).catch(console.error)
                             }
                         }).catch(console.error)
@@ -89,6 +78,16 @@ function generateImage(path, int, version, output, aspect, length, save, finalDe
         }
     }).catch(error => {
         console.error(error);
+    })
+}
+const saving = (save, output, finalDest, version_id, image_id, con) =>{
+    return new Promise((resolve, reject) =>{
+        if(save){
+        saveFile(output, finalDest)
+            .then(indexGenerated(version_id, image_id, con))
+            .then(resolve())
+            .catch(reject(err))
+        }   
     })
 }
 

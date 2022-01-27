@@ -3,8 +3,6 @@ const config = require('config');
 const fs = require('fs');
 const res = require('express/lib/response');
 const { set } = require('express/lib/response');
-const { create } = require('domain');
-const { Verify } = require('crypto');
 
 function setup(con, VERSIONS, LIBRARY,save, generated, cb){
 
@@ -13,11 +11,15 @@ function setup(con, VERSIONS, LIBRARY,save, generated, cb){
     console.log("Connected!");
     con.query("create table if not exists images (image_id INT(11) not null auto_increment, image VARCHAR(255), folder VARCHAR(255), rating INT, constraint images_pk primary key (image_id))", function (err, result) {
         if (err) throw err;
+        const folders =[]
         VERSIONS.forEach(version => {
-          fs.readdir(LIBRARY+version.folder, (err, files) => {
-            files.forEach(file => {
+          if(!folders.includes(version.folder)){
+            const filenames = fs.readdirSync(LIBRARY+version.folder)
+            filenames.forEach(file => {
+              console.log("Filename "+file)
               var req = "select * from images where image = '"+file+"'"
               con.query(req, function(err, result, fields){
+                console.log(file+"  "+result+ " "+result.length)
                 if(result.length === 0){
                   con.query("insert into images (image, folder, rating) values ('"+file+"', '"+version.folder+"', 0)", function (err, result) {
                     if (err) throw err;
@@ -25,8 +27,8 @@ function setup(con, VERSIONS, LIBRARY,save, generated, cb){
                 }
               })
             });
-          });
-         ;
+            folders.push(version.folder)
+          }
         }) 
         console.log("Table for pictures populated")   
       });
@@ -69,7 +71,6 @@ function createVersions(con, versions, save, generated, cb){
 function createGenerations(con, _cb){
   con.query("create table if not exists generations (generation_id INT(11) not null auto_increment, version_id INT(11) not null, image_id INT(11) not null, generated BOOLEAN not null, constraint generations_pk primary key (generation_id), foreign key (version_id) references versions(version_id), foreign key (image_id) references images(image_id))", function(err, result){
     console.log("Table for generations populated")
-
     _cb();
   })
 }

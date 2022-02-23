@@ -3,7 +3,7 @@
     "config": "^3.3.7",
     "express": "^4.17.2",
     "fs": "^0.0.1-security",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.0.1",
     "glob": "^7.2.0",
     "js-yaml": "^4.1.0",
     "mysql": "^2.18.1",

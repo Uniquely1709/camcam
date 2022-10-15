@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "config": "^3.3.7",
+    "config": "^3.3.8",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "fs-extra": "^10.1.0",
